@@ -20,7 +20,6 @@ server.on("request", (request,response) => {
                             </head>
                             <body>
                                 <a href="index.html" class="backhome">Retourner à la page d'accueil</a>
-                                <a href = "public/image-description.html">Mettez des description></a>
                                 <h1 id="mainwall">Mon mur d'images !</h1>
                                 <div id ="mesimages">`;
         for (let i = 0; i < images.length; i++) {
@@ -50,13 +49,17 @@ server.on("request", (request,response) => {
                                         <img src="/public/images/images_normal/camera.png" width=60px>
                                     </a>
                                     <div>
-                                        <img src="/public/images/images_normal/${request.url.slice(12)}.jpg" width=500px class="mainpicture">`
+                                        <img src="/public/images/images_normal/${request.url.slice(12)}.jpg" width=500px class="mainpicture">
+                                        <form action="/image-description${parseInt(request.url.slice(17))}" method="post" class="usercomment">
+                                            <input type="text" name="description" placeholder="Votre commentaire...">
+                                            <button type="submit">Partager</button>
+                                        </form>`
         if (tab[request.url.slice(17)] != undefined) {                              
-            pageHTML +=                           `<p class="textedescriptif">${tab[parseInt(request.url.slice(17))]}</p>`}
+            pageHTML +=                           `<div class="espace_commentaires"><div class="interieur">${tab[parseInt(request.url.slice(17))]}</div></div>`}
         pageHTML +=                        `</div>
                                                 <p class="textedescriptif">Le régime paléo nous encourage à manger comme nos ancêtres chasseurs-cueilleurs le faisaient à l’âge de pierre ; il comprend la consommation de poisson, de légumes, de fruits, de viande maigre, d’œufs et de noix, et exclut les produits laitiers, les céréales, les aliments transformés, le café, l’alcool, le sucre et le sel.</p><div class="containerNP">`
         if (parseInt(request.url.slice(17)) -1 > 0) {
-            pageHTML += `<a href="/page-image/image ${String(parseInt(request.url.slice(17)) -1)}" class ="previous">
+            pageHTML += `<a href="/page-image/image${String(parseInt(request.url.slice(17)) -1)}" class ="previous">
                         <p class="p">Image précedente</p>"
                         <img src="/public/images/images_small/image${String(parseInt(request.url.slice(17)) -1)}_small.jpg" alt ="Previous Picture" class="change_image">
                         </a>`
@@ -68,7 +71,7 @@ server.on("request", (request,response) => {
                         </body>
                             </html>`
         response.end(pageHTML)
-    } else if (request.method ==="POST" && request.url === "/public/image-description") {
+    } else if (request.method ==="POST" && request.url.startsWith("/image-description")) {
         let donnees
         request.on("data",(dataChunk) => {
             donnees += dataChunk.toString()
@@ -76,12 +79,20 @@ server.on("request", (request,response) => {
         })
         request.on("end",()=>{
             const paramValeur = donnees.split("&")
-            const number = paramValeur[0].split("=")[1]
-            const description = paramValeur[1].split("=")[1]
-            tab[number] = description;
-            const pageHTML = "<!DOCTYPE><html><body><h1>Votre commentaire à été enregistré avec succès</h1></body></html>"
+            const number = parseInt(request.url.slice(18))
+            const description = (paramValeur[0].split("=")[1]).replace(/\+/g," ")
+            if (tab[number] != undefined) {
+                let temp = tab[number]
+                temp += "<p class =\"commentaire\">Commentaire : " + description +"</p>"
+                tab[number] = temp
+            } else {
+                tab[number] = "<p class =\"commentaire\">Commentaire : " + description +"</p>";
+            }
             console.log(tab)
-            response.end(pageHTML)
+            response.statusCode = 302;
+            response.setHeader('Location', '/page-image/image' + request.url.slice(18));
+            response.end();
+
         })
     }else if (request.url.startsWith("/public/")) {
         try {

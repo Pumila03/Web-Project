@@ -37,7 +37,7 @@ body {
     text-decoration: None;
  }
 
-button {
+#button_menu {
     font-size: 20px;
     display: block;
     margin : 0 auto;
@@ -56,9 +56,11 @@ button {
 
 }
 
-button:hover {
+#button_menu:hover {
     width:200px;
 }
+
+
 
 @media screen  and (min-width:300px){
     #mesimages {
@@ -94,6 +96,22 @@ button:hover {
 @media screen  and (min-width:1200px){
     #mesimages {
         column-count: 5;
+        display: inline-block;
+        justify-content: center;
+        align-items: center;
+        background-color: #211d1d;
+        border-radius: 10px;
+        margin-top: 40px ;
+        padding: 50px;
+        margin-left: 10%;
+        margin-right: 10%;
+        position:relative;
+    }
+}
+
+@media screen  and (min-width:1600px){
+    #mesimages {
+        column-count: 7 ;
         display: inline-block;
         justify-content: center;
         align-items: center;
@@ -204,6 +222,8 @@ button:hover {
     border-radius: 7px;
     box-shadow: none;
     transition: box-shadow 0.3s ease;
+    display: block;
+    position: relative;
 }
 
 .mainpicture:hover {
@@ -271,4 +291,35 @@ button:hover {
 .change_image {
     display: inline-block;
     margin: 20px;
+}
+
+.commentaire {
+    text-align:left;
+    color: white;
+    background-color: #0f0f0f;
+    display: block;
+    margin : 30px;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    padding: 10px;
+    border-radius: 5px;
+    overflow-wrap: normal;
+
+}
+
+
+.espace_commentaires {
+    background-color: #211d1d;
+    margin:50px;
+    border-radius: 10px;
+    margin-left: 10px;
+    display: inline-block;
+    grid-template-columns: auto;
+}
+
+.usercomment {
+    margin-top:40px;
+    padding: 30px;
+    background-color: #211d1d;
+    display: inline-block;
+    margin-left: 20%;
 }
