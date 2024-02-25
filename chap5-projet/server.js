@@ -1,4 +1,3 @@
-const { log } = require("console");
 const fs = require("fs");
 const http = require("http");
 const server = http.createServer();
@@ -36,7 +35,6 @@ server.on("request", (request,response) => {
                 </html>`
         response.end(pageHTML)
     } else if (request.url.startsWith("/page-image/image")){
-        console.log(tab[request.url.slice(17)])
         let pageHTML = `<!DOCTYPE html>
                             <html>
                                 <head>
@@ -60,12 +58,13 @@ server.on("request", (request,response) => {
                                                 <p class="textedescriptif">Le régime paléo nous encourage à manger comme nos ancêtres chasseurs-cueilleurs le faisaient à l’âge de pierre ; il comprend la consommation de poisson, de légumes, de fruits, de viande maigre, d’œufs et de noix, et exclut les produits laitiers, les céréales, les aliments transformés, le café, l’alcool, le sucre et le sel.</p><div class="containerNP">`
         if (parseInt(request.url.slice(17)) -1 > 0) {
             pageHTML += `<a href="/page-image/image${String(parseInt(request.url.slice(17)) -1)}" class ="previous">
-                        <p class="p">Image précedente</p>"
+                        <p class="p">Image précedente</p>
                         <img src="/public/images/images_small/image${String(parseInt(request.url.slice(17)) -1)}_small.jpg" alt ="Previous Picture" class="change_image">
                         </a>`
         } if (parseInt(request.url.slice(17)) +1 < 54 ) {
-            pageHTML += `<a href="/page-image/image${String(parseInt(request.url.slice(17)) +1)}" class ="next">"
-                        <img src="/public/images/images_small/image${String(parseInt(request.url.slice(17)) +1)}_small.jpg" alt ="Next Picture" class="change_image"><p class="n">Image suivante</p></a>`
+            pageHTML += `<a href="/page-image/image${String(parseInt(request.url.slice(17)) +1)}" class ="next">
+                        <p class="n">Image suivante</p>
+                        <img src="/public/images/images_small/image${String(parseInt(request.url.slice(17)) +1)}_small.jpg" alt ="Next Picture" class="change_image"></a>`
         }
         pageHTML += `</div>
                         </body>
