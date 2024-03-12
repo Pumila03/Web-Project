@@ -1,22 +1,13 @@
-/*mets le fond de toutes les pages en gris foncé*/
-
-
 body {
     background-color: #352d2c  ;
 }
-
-/*changes les propriété graphiques du logo du menu*/
-
 
 #logo {
     display : block;
     margin : 0 auto;
 }
 
-/*changes les propriété graphiques de la decription du menu*/
-
-
-#maintext {
+#menutext {
     color: black;
     text-align: center;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
@@ -30,9 +21,7 @@ body {
     border-radius: 10px;
 }
 
-/*changes les propriété graphiques du bloc contenant les images d'introduction*/
-
-#image-block {
+#menu_image_container {
     margin : 0 auto;
     text-align: center;
     background-color: #211d1d;
@@ -41,23 +30,23 @@ body {
     margin-right: 22%;
 }
 
-/*changes les propriété graphiques des images d'introduction*/
-
-.imgc {
+.menu_image {
     margin : 25px;
     cursor: pointer;
     border-radius: 5px;
     text-decoration: None;
+    width:20%;
+    transition: width 0.3s ease;
  }
 
-/*changes les propriété graphiques du boutons pour acceder au mur d'image*/
+ .menu_image:hover {
+    width: 25%;
+ }
 
-
-#button_menu {
+#menu_button {
     font-size: 20px;
     display: block;
     margin : 0 auto;
-    cursor: pointer;
     background: linear-gradient(90deg,#601258 0%, #a24498 50%,#d300be 100%);
     color : white;  
     padding: 10px;
@@ -72,83 +61,57 @@ body {
 
 }
 
-#button_menu:hover {
+#menu_button:hover {
     width:200px;
 }
 
-/*changes les propriété graphiques du bloc contenant toutes les images, on y trouve 4 
-blocs différents afin de pouvoir avoir un affichage différents selon la taille de l'écran*/
+#wall_all_images_container {
+    display: inline-block;
+    justify-content: center;
+    align-items: center;
+    background-color: #211d1d;
+    border-radius: 10px;
+    margin-top: 40px;
+    position: relative;
+}
 
-
-@media screen  and (min-width:300px){
-    #mesimages {
+@media screen and (min-width: 300px) {
+    #wall_all_images_container {
         column-count: 1;
-        display: block;
-        justify-content: center;
-        align-items: center;
-        background-color: #211d1d;
-        border-radius: 10px;
-        margin-top: 40px ;
-        padding-top: 15px;
         margin-left: 24%;
         margin-right: 24%;
-        position:relative;
+        padding-top: 15px;
     }
 }
 
-@media screen  and (min-width:600px){
-    #mesimages {
+@media screen and (min-width: 600px) {
+    #wall_all_images_container {
         column-count: 3;
-        display: block;
-        justify-content: center;
-        align-items: center;
-        background-color: #211d1d;
-        border-radius: 10px;
-        margin-top: 40px ;
-        padding-top: 15px;
         margin-left: 24%;
         margin-right: 24%;
-        position:relative;
+        padding-top: 15px;
     }
 }
-@media screen  and (min-width:1200px){
-    #mesimages {
+
+@media screen and (min-width: 1200px) {
+    #wall_all_images_container {
         column-count: 5;
-        display: inline-block;
-        justify-content: center;
-        align-items: center;
-        background-color: #211d1d;
-        border-radius: 10px;
-        margin-top: 40px ;
-        padding: 50px;
         margin-left: 10%;
         margin-right: 10%;
-        position:relative;
+        padding: 50px;
     }
 }
 
-@media screen  and (min-width:1600px){
-    #mesimages {
-        column-count: 7 ;
-        display: inline-block;
-        justify-content: center;
-        align-items: center;
-        background-color: #211d1d;
-        border-radius: 10px;
-        margin-top: 40px ;
-        padding: 50px;
+@media screen and (min-width: 1600px) {
+    #wall_all_images_container {
+        column-count: 7;
         margin-left: 10%;
         margin-right: 10%;
-        position:relative;
+        padding: 50px;
     }
 }
 
-/*changes les propriété graphiques de chaque images du mur, on y trouve 
-beaucoup de selecteur de classe différents de pouvoir correctement appliquer 
-le blur sans masquer le texte, masquer le texte sans masquer l'image, etc...*/
-
-
-.imgc1 {
+.wall_image {
     margin : 20px;   
     display :block  ;
     border-radius: 10px 0px 10px 0px;
@@ -158,13 +121,13 @@ le blur sans masquer le texte, masquer le texte sans masquer l'image, etc...*/
     transition:  filter 0.8s ease;
 }
 
-.image-container {
+.wall_image_container {
     position: relative;
     filter :blur(0px) ;
 
 }
 
-.hey {
+.wall_image_text {
     position:absolute;
     z-index:1;
     bottom:40%;
@@ -177,18 +140,15 @@ le blur sans masquer le texte, masquer le texte sans masquer l'image, etc...*/
 }
 
 
-.image-container:hover .imgc1{
+.wall_image_container:hover .wall_image{
     filter:blur(3px) brightness(60%);
 }
 
-.image-container:hover .hey {
+.wall_image_container:hover .wall_image_text {
     opacity: 1;
 }
 
-/*changes les propriété graphiques du bouton permettant de revenir au menu principale*/
-
-
-.backhome {
+.back_to_menu {
     display: inline-block;
     text-decoration: none;
     border-radius: 5px;
@@ -203,16 +163,12 @@ le blur sans masquer le texte, masquer le texte sans masquer l'image, etc...*/
 
 }
 
-.backhome:hover {
+.back_to_menu:hover {
     box-shadow: 0px 8px 20px #de61d1;
     
 }
 
-/*les selcteurs suivants permettent de changer les propriété grpahiques, en particulier de 
-faire l'animation du changement de taille(Le changement de taille à été réalisé à l'aide de 
-chatGPT)*/
-
-#mainwall {
+#wall_images_title {
     text-align: center;
     color: white;
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
@@ -242,9 +198,6 @@ chatGPT)*/
     animation: enlargeText 1.5s ease 1s forwards, addShadow 1s ease 1s forwards;
 }
 
-/*changes les propriété graphiques de la decription de l'images*/
-
-
 .mainpicture {
     width: 400px;
     margin-left: 33%;
@@ -261,8 +214,6 @@ chatGPT)*/
 .mainpicture:hover {
     box-shadow:0px 8px 16px black ;
 }
-
-/*changes les propriété graphiques de la decription de l'images*/
 
 .textedescriptif {
     box-shadow: none;
@@ -284,9 +235,6 @@ chatGPT)*/
     box-shadow:0px 8px 16px black ;
 }
 
-/*changes les propriété graphiques des blocs permettant d'allez à l'images suivante et p
-récédents*/
-
 .previous, .next {
     height: 230px;
     width: 500px;
@@ -305,23 +253,16 @@ récédents*/
     box-shadow: 0px 8px 16px black;
 }
 
-/*gere les textes dans previous et next*/
-
 .p, .n{
     display: inline-block; 
     padding-top: 18%;
     padding-left: 20%;
 }
 
-/*Maintient l'espace entre les block previous next*/
-
 .containerNP {
     display: flex;
     justify-content: space-between; 
 }
-
-/*ce selecteur et le suivant permettent de changer le filtre de l'image en noir et blancs 
-lorsque l'on passe le curseur dessu*/
 
 .change_image {
     margin: 20px;
@@ -332,12 +273,6 @@ lorsque l'on passe le curseur dessu*/
 .previous:hover .change_image,.next:hover .change_image {
     filter: grayscale(0%);
 }
-
-/*changes les propriété graphiques de l'affichage des commentaire en distinguant :
-1 : le commentaire posté, 
-2 : la boite contenant les commentaire posté, 
-3 : la boite dans lequelle se trouve le bouton et le widget pour ecrire le commentaire*/
-
 
 .commentaire {
     text-align:left;
