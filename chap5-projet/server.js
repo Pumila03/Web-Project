@@ -3,7 +3,14 @@ const http = require("http");
 const server = http.createServer();
 const port = 8080;
 let tab = [];
-const images = fs.readdirSync("./public/images/images_small/")
+const images = fs.readdirSync("./public/images/")
+const taille = parseInt(images.length) / 2 
+console.log(taille)
+
+function idCirculaire(id) {
+    result = ((id-1 + taille) % taille) + 1
+    return result
+}
 
 
 
@@ -21,13 +28,14 @@ server.on("request", (request,response) => {
                                 <h1 id="wall_images_title">Mon mur d'images !</h1>
                                 <div id ="wall_all_images_container">`;
         for (let i = 0; i < images.length; i++) {
-            console.log(images[i])
-            pageHTML += `       <a href="/page-image/${images[i].split("_")[0]}">
-                                    <div class ="wall_image_container">
-                                        <img src="./public/images/images_small/${images[i]}" class ="wall_image">
-                                        <div class="wall_image_text">Voir plus</div>
-                                    </div>
-                                </a>`
+            if (images[i].endsWith("_small.jpg")) {
+                pageHTML += `       <a href="/page-image/${images[i].split("_")[0]}">
+                                        <div class ="wall_image_container">
+                                            <img src="./public/images/${images[i]}" class ="wall_image">
+                                            <div class="wall_image_text">Voir plus</div>
+                                        </div>
+                                    </a>`
+                                }
         }
         //l'utilisation de plusieurs balises div autours des images sert à créer l'effet de floue et l'affichage du texte
         pageHTML += `       </div>
@@ -37,6 +45,8 @@ server.on("request", (request,response) => {
         response.end(pageHTML)
     } else if (request.url.startsWith("/page-image/image")){
         const id = parseInt(request.url.split("/image")[1]);
+        const id_prev = idCirculaire(id - 1)
+        const id_next = idCirculaire(id + 1) 
         let pageHTML = `<!DOCTYPE html>
                             <html>
                                 <head>
@@ -46,28 +56,27 @@ server.on("request", (request,response) => {
                                 </head>
                                 <body>
                                     <a href="/images" class="back_to_menu">
-                                        <img src="/public/images/images_normal/camera.png" width=60px>
+                                        <img src="/public/camera.png" width=60px>
                                     </a>
                                     <div>
-                                        <img src="/public/images/images_normal/${request.url.split("image/")[1]}.jpg" width=500px class="mainpicture">
+                                        <img src="/public/images/${request.url.split("image/")[1]}.jpg" width=500px class="mainpicture">
                                         <form action="/image-description${id}" method="post" class="usercomment">
                                             <input type="text" name="description" placeholder="Votre commentaire...">
                                             <button type="submit">Partager</button>
                                         </form>`
         if (tab[id] != undefined) {                              
-            pageHTML +=                           `<div class="espace_commentaires"><div class="interieur">${tab[id]}</div></div>`}
+            pageHTML +=                     `<div class="espace_commentaires"><div class="interieur">${tab[id]}</div></div>`
+        }
         pageHTML +=                        `</div>
-                                                <p class="textedescriptif">Le régime paléo nous encourage à manger comme nos ancêtres chasseurs-cueilleurs le faisaient à l’âge de pierre ; il comprend la consommation de poisson, de légumes, de fruits, de viande maigre, d’œufs et de noix, et exclut les produits laitiers, les céréales, les aliments transformés, le café, l’alcool, le sucre et le sel.</p><div class="containerNP">`
-                                                if ( id - 1 > 0) {
-                                                    pageHTML += `<a href="/page-image/image${String((id - 1 + images.length ) % images.length )}" class ="previous">
+                                                <p class="textedescriptif">Le régime paléo nous encourage à manger comme nos ancêtres chasseurs-cueilleurs le faisaient à l’âge de pierre ; il comprend la consommation de poisson, de légumes, de fruits, de viande maigre, d’œufs et de noix, et exclut les produits laitiers, les céréales, les aliments transformés, le café, l’alcool, le sucre et le sel.</p><div class="containerNP">
+                                                    <a href="/page-image/image${id_prev}" class ="previous">
                                                         <p class="p">Image précedente</p>
-                                                        <img src="/public/images/images_small/image${String((id - 1  + images.length ) % images.length)}_small.jpg" alt ="Previous Picture" class="change_image">
-                                                    </a>`
-                                                }
-                                                pageHTML += `<a href="/page-image/image${String((id + images.length +1 ) % images.length  )}" class ="next">
-                                                    <p class="n">Image suivante</p>
-                                                    <img src="/public/images/images_small/image${String((id + 1 + images.length) % images.length  )}_small.jpg" alt ="Next Picture" class="change_image">
-                                                </a>
+                                                        <img src="/public/images/image${id_prev}_small.jpg" alt ="Previous Picture" class="change_image">
+                                                    </a>
+                                                    <a href="/page-image/image${id_next}" class ="next">
+                                                        <p class="n">Image suivante</p>
+                                                        <img src="/public/images/image${id_next}_small.jpg" alt ="Next Picture" class="change_image">
+                                                    </a>
                                             </div>
                                         </body>
                                     </html>`
