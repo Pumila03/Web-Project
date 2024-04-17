@@ -350,3 +350,30 @@ body {
     display: inline-block;
     text-align:right;
 }
+
+.heart {
+    display: inline-block;
+    vertical-align: middle; /* Alignement vertical au centre */
+}
+
+.heart > img {
+    width: 30px;
+    vertical-align: middle; /* Alignement vertical au centre */
+    margin-right: 5px; /* Réduire l'espace entre l'image et le texte */
+}
+
+.like-text {
+    display: inline-block;
+    color: white;
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    vertical-align: middle; /* Alignement vertical au centre */
+    margin-right: 75px;
+}
+
+.background-like {
+    background-color: #161414;
+    display: inline-block; /* Utilisation de "inline-block" pour que le conteneur s'ajuste à son contenu */
+    padding: 5px 10px; /* Ajout de padding pour l'espace autour du contenu */
+    border-radius: 12px;
+    margin-left: 18px;
+}

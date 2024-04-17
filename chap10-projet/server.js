@@ -51,9 +51,29 @@ server.on("request", async (request,response) => {
         }
     }
     if (request.url === "/images") {
-        const sqlQuery = 'SELECT fichier from images'; 
-        const sqlResult = await client.query(sqlQuery); 
-        const fichiersImage = sqlResult.rows.map(row => row.fichier);
+        const sqlQueryFichier = 'SELECT fichier from images'; 
+        const sqlResultFichier = await client.query(sqlQueryFichier); 
+        const fichiersImage = sqlResultFichier.rows.map(row => row.fichier);
+
+        let likedTab = [];
+
+        if (sessions[sessionId].username != undefined) {
+            const sqlQueryId = `SELECT id FROM accounts WHERE username = '${sessions[sessionId].username}';`;
+            const SqlResultId = await client.query(sqlQueryId);
+            const user_id = SqlResultId.rows.map(row => row.id); 
+
+            const sqlQueryLiked = `SELECT id_images FROM accounts_images_like WHERE id_accounts ='${user_id}'`;
+            const sqlResultLiked = await client.query(sqlQueryLiked);
+            const likedImages = sqlResultLiked.rows.map(row => row.id_images)
+
+            for (let i = 0;i < fichiersImage.length;i++) {
+                likedTab[i] = false; 
+            }
+            for (let i = 0;i < likedImages.length;i++) {
+                likedTab[likedImages[i]-1] = true; 
+            }
+        }
+
         let pageHTML = `<!DOCTYPE html>
                         <html>
                             <head>
@@ -73,6 +93,18 @@ server.on("request", async (request,response) => {
                                             <div class="wall_image_text">Voir plus</div>
                                         </div>
                                     </a>`
+                                    if (sessions[sessionId].username !== undefined) {
+
+                                        const sqlQueryTotalLiked = `SELECT COUNT(*) AS nb FROM accounts_images_like WHERE id_images = ${i+1};`;
+                                        const sqlResultTotalLiked = await client.query(sqlQueryTotalLiked);
+                                        const totalLiked = sqlResultTotalLiked.rows.map(row => row.nb)
+
+                                        if (likedTab[i] == false) {
+                                            pageHTML+=`<div class = "background-like"><a href="like/${i+1}" class="heart"><img src="/public/like_heart.png" ></a><p class="like-text"> : ${totalLiked}</p></div>`
+                                        } else {
+                                            pageHTML+=`<div class = "background-like"><a href="unlike/${i+1}" class="heart"><img src="/public/liked_heart.png" ></a><p class="like-text"> : ${totalLiked}</p></div>`
+                                        }
+                                    }
                                 }
         //l'utilisation de plusieurs balises div autours des images sert à créer l'effet de floue et l'affichage du texte
         pageHTML += `       </div>
@@ -228,7 +260,7 @@ server.on("request", async (request,response) => {
                     const salt = findResult.rows[0].salt;
                     const trueHash = findResult.rows[0].hash;
                     const computedHash = crypto.createHash("sha256").update(password).update(salt).digest("hex");
-                    if (trueHash === computedHash) { //AUTHENTICATED
+                    if (trueHash === computedHash) { 
                         sessions[sessionId].username = username;
                         response.statusCode = 302;
                         response.setHeader('Location','/')
@@ -253,11 +285,37 @@ server.on("request", async (request,response) => {
             response.statusCode = 404;
             response.end('error');
         }      
+    } else if (request.url == "/signout") {
+        sessions[sessionId].username = undefined;
+        response.statusCode = 302;
+        response.setHeader('Location','/')
+        response.end();
+    } else if (request.url.startsWith("/like/")) {
+        const sqlQueryId = `SELECT id FROM accounts WHERE username = '${sessions[sessionId].username}';`
+        const SqlResultId = await client.query(sqlQueryId)
+        const user_id = SqlResultId.rows.map(row => row.id) 
+        const sqlQueryLike = `INSERT INTO accounts_images_like (id_accounts,id_images) VALUES ('${user_id}','${request.url.split('/like/')[1]}')`
+        await client.query(sqlQueryLike)
+        response.statusCode = 302
+        response.setHeader('Location','/images')
+        response.end()
+
+    } else if (request.url.startsWith("/unlike/")) {
+        const sqlQueryId = `SELECT id FROM accounts WHERE username = '${sessions[sessionId].username}';`
+        const SqlResultId = await client.query(sqlQueryId)
+        const user_id = SqlResultId.rows.map(row => row.id) 
+        const sqlQueryUnlike = `DELETE FROM accounts_images_like WHERE id_accounts = '${user_id}'AND id_images = '${request.url.split('/unlike/')[1]}'`
+        await client.query(sqlQueryUnlike)
+        response.statusCode = 302
+        response.setHeader('Location','/images')
+        response.end()
+
     } else {
 
         const sqlQuery = 'SELECT fichier from images ORDER BY date DESC;'; 
         const sqlResult = await client.query(sqlQuery); 
         const fichiersImage = sqlResult.rows.map(row => row.fichier);
+
 
 
         let pageHTML =`<!DOCTYPE html>
@@ -267,13 +325,18 @@ server.on("request", async (request,response) => {
                 <title>La page principale</title>
                 <link rel="stylesheet" href="public/style.css"/>
             </head>
-            <body>
+            <body>`
+                if (sessions[sessionId].username ==undefined) {
+                    pageHTML += `
                 <span id="menu_left">
                     <a href="signup" class="log">S'inscrire</a>
                     <a href="signin" class="log">Se connecter</a>
                 </span>`
+                }
                 if (sessions[sessionId].username !== undefined) {
-                    pageHTML += `<span id ="menu_right"><p class="log">Bienvenue ${sessions[sessionId].username}</p></span>`
+                    pageHTML += `
+                    <span id ="menu_left"><a href="signout" class="log">Se déconnecter</a></span>
+                    <span id ="menu_right"><p class="log">Bienvenue ${sessions[sessionId].username}</p></span>`
                 }
                 pageHTML += `<img id="logo" width = "170px" src="public/ace.png">
                 <p id="menutext">Voici Ma page ou je vous présente mon mur d'images !</p>

@@ -4,6 +4,14 @@ DROP DATABASE IF EXISTS application_image;
 
 CREATE DATABASE application_image;
 
+DROP TABLE IF EXISTS auteurs;
+DROP TABLE IF EXISTS orientations;
+DROP TABLE IF EXISTS images;
+DROP TABLE IF EXISTS commentaire;
+DROP TABLE IF EXISTS accounts;
+DROP TABLE IF EXISTS accounts_images_likes;
+
+
 \c application_image
 
 CREATE TABLE auteurs (
@@ -113,3 +121,9 @@ CREATE TABLE accounts (
     salt BYTEA,
     hash BYTEA
 );
+
+CREATE TABLE accounts_images_like (
+    id SERIAL PRIMARY KEY,
+    id_accounts int references accounts(id),
+    id_images int references images(id)
+)

@@ -6,7 +6,8 @@ mainImage.addEventListener('click', () => {
     largeur = styles.getPropertyValue('width');
     mainImage.style.width = `${parseInt(largeur.split("px")[0]) + 10}px`})
 
-mainImage.addEventListener('contextmenu', () => {
+mainImage.addEventListener('contextmenu', (e) => {
+    e.preventDefault()
     largeur = styles.getPropertyValue('width');
     mainImage.style.width = `${parseInt(largeur.split("px")[0]) - 10}px`})
 
