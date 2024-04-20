@@ -14,12 +14,16 @@ mainImage.addEventListener('contextmenu', (e) => {
 let submitButton = document.querySelector("#commentbutton")
 
 submitButton.disabled = true
+submitButton.style.backgroundColor = 'red';
+
 
 document.body.addEventListener('keyup',()=>{
     if (commentaire.value == "") {
         submitButton.disabled = true
+        submitButton.style.backgroundColor = 'red';
     } else {
         submitButton.disabled = false
+        submitButton.style.backgroundColor = '#c001d1';
     }
 })
 
