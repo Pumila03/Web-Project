@@ -101,7 +101,7 @@ server.on("request", async (request,response) => {
                 if (sessions[sessionId].username !== undefined) {pageHTML+="<div>"}
                     pageHTML += `       <a href="/page-image/${fichiersImage[i].split('.')[0]}">
                                             <div class ="wall_image_container">
-                                                <img src="./public/images/${fichierSmallImage}" class ="wall_image">
+                                                <img src="public/images/${fichierSmallImage}" class ="wall_image">
                                                 <div class="wall_image_text">Voir plus</div>
                                             </div>
                                         </a>`
@@ -427,6 +427,17 @@ server.on("request", async (request,response) => {
         </html>`
         response.end(pageHTML)
     }
+})
+
+
+server.on("request",async(req,res) => {
+    if (req.url == "/stats") {
+        sqlQuery = "SELECT COUNT(*) as nb FROM accounts";
+        sqlResult = await client.query(sqlQuery);
+        comptes = sqlResult.rows.map(row => row.nb)
+
+        res.end(`compte utilisateur creer : ${comptes}`)
+    }   
 })
 
 
